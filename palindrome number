@@ -1,0 +1,30 @@
+if(0 > x) {
+    return FALSE;
+} else if (0 == x) {
+    return TRUE;
+}
+/* x>0 */
+int len = 1;
+int tmp = x;
+while(tmp/10 > 0) {
+    len++;
+    tmp = tmp/10;
+}
+int pow = 1;
+tmp = len -1;
+while(tmp > 0){
+    pow *= 10;
+    tmp--;
+}
+
+for(int i = 0; i < len/2; i++) {
+    if(x/pow != x%10) {
+        return FALSE;
+    }
+    x = x - (x%10);
+    x = x - (x/pow)*pow;
+    x = x / 10;
+    pow = pow/(10*10);
+}
+
+return TRUE;
