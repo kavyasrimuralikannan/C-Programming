@@ -1,0 +1,71 @@
+int is_pali(char *s)
+{
+    char temp[1005] ;
+    strcpy(temp , s);
+    int len = strlen(s);
+    for(int i = 0 ; i < len/2 ; i++)
+    {
+        char t = temp[i];
+        temp[i] = temp[len-i-1];
+        temp[len-i-1] = t;
+    }
+    if(strcmp(temp , s) == 0)
+    {
+        return 1 ;
+    }
+    return 0 ;
+}
+
+char* longestPalindrome(char* s) {
+if(strlen(s) <= 1)
+{
+    return s ;
+}
+char *jvrc = (char *)malloc(1005 * sizeof(char ));
+jvrc[0] = '\0';
+
+int len = strlen(s);
+
+for(int i = 0 ; i < len ; i++)
+{
+    char temp[1005];
+    int o = 0, stop = 0 ;
+    temp[o] = s[i];
+    o++;
+    for(int j = i+1 ; j < len ; j++)
+    {
+       if(s[i] == s[j])
+       {
+          temp[o] = s[j];
+          o++;
+          temp[o] = '\0';
+          
+          if(is_pali(temp) && o > strlen(jvrc))
+          {
+             strcpy(jvrc , temp) ;
+             if(strlen(jvrc) == strlen(s))
+             {
+                stop++;
+                break; 
+             }
+          }
+       }
+       else
+       {
+          temp[o] = s[j];
+          o++;
+       }
+    }
+    if(stop)
+    {
+        break; 
+    }
+}
+if(strlen(jvrc) == 0 && strlen(s) > 0)
+{
+    int o = 0; 
+    jvrc[o] = s[0];o++;
+    jvrc[o] = '\0';
+}
+return jvrc; 
+}
