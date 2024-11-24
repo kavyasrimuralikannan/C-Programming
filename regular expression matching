@@ -1,0 +1,54 @@
+#define MAX_LEN 20
+
+typedef struct {
+    char c;
+    _Bool repeating;
+    _Bool active;
+} state;
+
+_Bool match_char (char s, char p) {
+    return p == '.' || p == s;
+}
+
+void solve_epsilon(size_t count, state states[count]) {
+    for (ssize_t j = 0; j < count - 1; j++) {
+        if (states[j].active && states[j + 1].repeating) {
+            /* all repeating states are also in the same epsilon closure as the previous state */
+            states [j + 1].active = 1;
+        }
+    }
+}
+
+bool isMatch(char* s, char* p) {
+    state states[MAX_LEN + 1] = {{.active = 1}};
+    size_t state_count = 1;
+
+    for (size_t i = 0; i < strlen(p); i++) {
+        states[state_count] = (state) {p[i], p[i + 1] == '*'};
+        if (states[state_count].repeating) {
+            i++;
+        }
+        state_count++;
+    }
+
+    for (size_t i = 0; i < strlen(s); i++) {
+        solve_epsilon(state_count, states);
+
+        for (ssize_t j = state_count - 1; j >= 0; j--) {
+            if (!states[j].active) {
+                continue;
+            }
+
+            if (!states[j].repeating || !match_char(s[i], states[j].c)) {
+                states[j].active = 0;
+            }
+
+            if (match_char(s[i], states[j + 1].c)) {
+                states[j + 1].active = 1;
+            }
+        }
+    }
+    solve_epsilon(state_count, states);
+
+    return states[state_count - 1].active;
+}
