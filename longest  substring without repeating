@@ -1,0 +1,39 @@
+#include <stdint.h>
+
+int lengthOfLongestSubstring(char* s) {
+    uint32_t lh = 0;
+    uint64_t hh = 0;
+    int length = 0;
+    char *sh = s;
+    for(;*s!=0x0;) {
+        if(*s < 64) {
+            uint32_t lhh = (uint32_t)(((uint32_t)1) << (((uint32_t)(*s))-32));
+            if((lh & lhh) == 0) {
+                lh |= lhh;
+                s++;
+                length = (s-sh) > length ? (s-sh) : length;
+                continue;
+            } 
+            goto adjust;
+        } else {
+            uint64_t hhh = (uint64_t)(((uint64_t)1) << (((uint64_t)(*s))-64));
+            if((hhh & hh) == 0) {
+                hh |= hhh;
+                s++;
+                length = (s-sh) > length ? (s-sh) : length;
+                continue;
+            } 
+            //Fall through
+            goto adjust;
+        }
+        adjust:
+        if(*sh <64) {
+                lh ^= (uint32_t)(((uint32_t)1) << (((uint32_t)(*sh))-32));
+                sh++;
+        } else {
+                hh ^= (uint64_t)(((uint64_t)1) << (((uint64_t)(*sh))-64));
+                sh++;
+        }
+    }
+    return length;
+}
