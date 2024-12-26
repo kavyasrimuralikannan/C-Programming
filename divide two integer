@@ -1,0 +1,44 @@
+int divide(int dividend, int divisor) {
+    bool sign = (dividend <0 ^ divisor <0) ? 1 : 0;
+    int div2,res=0;
+
+    // division by 1 = dividend
+    if (divisor==1 ) 
+        return dividend;
+    if (divisor==-1) {
+        if (dividend==INT_MIN)
+            return INT_MAX;
+        return -dividend;
+    }
+    // divisor == INT_MIN have 2 option
+    // divided by itself will result 1 otherwise 0
+    if (divisor==INT_MIN)
+        return (dividend==INT_MIN) ? 1 : 0;
+
+    // half the iteration by 2 by doubling the divisor
+    // Check for overflow before dive
+    if (divisor>-1073741824 && divisor<1073741823 ) {
+        div2= divisor+divisor;
+        if (dividend>0) {
+            while ( (sign && dividend>=-div2) || ( !sign && dividend>=div2 )) {
+                dividend = (sign) ? dividend+div2 : dividend-div2;
+                res+=2;
+            }
+        } else {
+           while ( (sign && dividend<=-div2) || ( !sign && dividend<=div2 )) {
+                dividend = (sign) ? dividend+div2 : dividend-div2;
+                res+=2;
+            }
+        }
+    }
+    //check if anything left for odd division 
+    if (dividend >0 ) {
+        if ((sign && dividend>=-divisor) || ( !sign && dividend>=divisor ))
+            res++;
+    } else {
+        if ( (sign && dividend<=-divisor) || ( !sign && dividend<=divisor ))
+            res++;
+    }
+    
+    return sign ? -res : res;
+}
