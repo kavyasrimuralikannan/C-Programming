@@ -1,0 +1,31 @@
+int* searchRange(int* nums, int size, int target, int* returnSize) {
+    int low = 0;
+    int high = size - 1;
+    int first = -1;
+    int last = -1;  
+    if (size > 0 && nums[low + (high - low) / 2] > target) {
+        high = low + (high - low) / 2 - 1; 
+    }
+
+    int found = 0;
+    int kodi = 0;
+    for (int i = low; i <= high; i++) {
+        if (nums[i] == target && found == 0) {
+            first = i;
+            found = 1;
+        }
+        if (nums[high - i + low] == target && kodi == 0) {
+            last = high - i + low;
+            kodi = 1;
+        }
+        if (found == 1 && kodi == 1) {
+            break;
+        }
+    }
+
+    int* result = (int*)malloc(2 * sizeof(int));
+    result[0] = first;
+    result[1] = last;
+    *returnSize = 2; 
+    return result;
+}
