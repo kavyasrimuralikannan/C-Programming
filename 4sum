@@ -1,0 +1,64 @@
+/**
+ * Return an array of arrays of size *returnSize.
+ * The sizes of the arrays are returned as *returnColumnSizes array.
+ * Note: Both returned array and *columnSizes array must be malloced, assume
+ * caller calls free().
+ */
+
+// Sort function for qsort
+int sort(const void* a, const void* b) { return (*(int*)a - *(int*)b); }
+
+int** fourSum(int* nums, int numsSize, int target, int* returnSize,
+              int** returnColumnSizes) {
+    qsort(nums, numsSize, sizeof(int), sort);//Sort the input array
+
+    int** result = (int**)malloc(sizeof(int*) * numsSize * numsSize);
+    (*returnSize) = 0;// to store the answer
+    *returnColumnSizes = (int*)malloc(sizeof(int) * numsSize * numsSize);
+
+    for (int j = 0; j < numsSize - 3; j++) { //Outer loop
+        if(j>0 && nums[j]==nums[j-1]){ // Skip duplicates for j
+                continue;
+        }
+        for (int i = j+1; i < numsSize - 2; i++) { //Skip duplicates for i
+            if (i > j+1 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            
+            int left = i + 1;
+            int right = numsSize - 1;
+            while (left < right) {
+                long long sum = (long long)nums[j] + (long long)nums[i] + (long long)nums[left] + (long long)nums[right]; //use long lonf to avoid overflow
+
+                if (sum == target) {
+                    // Allocate memory
+                    result[*returnSize] = (int*)malloc(sizeof(int) * 4);
+                    result[*returnSize][0] = nums[i];
+                    result[*returnSize][1] = nums[left];
+                    result[*returnSize][2] = nums[right];
+                    result[*returnSize][3] = nums[j];
+                    (*returnColumnSizes)[*returnSize] = 4;
+                    (*returnSize)++;
+
+                    left++;
+                    right--;
+
+                    while (left < right && nums[left] == nums[left - 1]) { //Skip duplicates for left
+                        left++; 
+                    }
+                    while (left < right && nums[right] == nums[right + 1]) { //Skip duplicates for right
+                        right--; 
+                    }
+                }
+
+                else if (sum < target) {
+                    left++; //Move left pointer to right
+                } else {
+                    right--; //Move right pointer to left
+                }
+            }
+        }
+    }
+
+    return result;
+}
